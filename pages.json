@@ -1,0 +1,53 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "AI 头像工厂",
+        "navigationBarBackgroundColor": "#1a1a2e",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/upload/upload",
+      "style": {
+        "navigationBarTitleText": "选择照片",
+        "navigationBarBackgroundColor": "#1a1a2e",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/generate/generate",
+      "style": {
+        "navigationBarTitleText": "AI 生成中",
+        "navigationBarBackgroundColor": "#1a1a2e",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/result/result",
+      "style": {
+        "navigationBarTitleText": "生成结果",
+        "navigationBarBackgroundColor": "#1a1a2e",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/history/history",
+      "style": {
+        "navigationBarTitleText": "历史记录",
+        "navigationBarBackgroundColor": "#1a1a2e",
+        "navigationBarTextStyle": "white"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "AI头像工厂",
+    "navigationBarBackgroundColor": "#1a1a2e",
+    "backgroundColor": "#0f0f23",
+    "backgroundColorTop": "#1a1a2e",
+    "backgroundColorBottom": "#0f0f23"
+  },
+  "uniIdRouter": {}
+}

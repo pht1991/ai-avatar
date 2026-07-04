@@ -1,0 +1,39 @@
+# === 依赖 ===
+node_modules/
+
+# === 构建产物 ===
+dist/
+unpackage/
+
+# === Vite 缓存 ===
+.vite/
+
+# === IDE / 编辑器 ===
+.hbuilderx/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# === 操作系统 ===
+.DS_Store
+Thumbs.db
+
+# === 日志 ===
+*.log
+npm-debug.log*
+
+# === 环境变量（含 API Key） ===
+.env.local
+.env.*.local
+src/api/key.js
+
+# === 微信小程序（保留在微信工具内配置即可） ===
+project.config.json
+project.private.config.json
+
+# === 临时文件 ===
+*.tmp
+.temp/
+temp/

@@ -1,0 +1,64 @@
+// uni.scss — PixelMagic 主题全局样式变量
+// 参照 pixelmagic-miniprogram 视觉风格
+
+// ---------- 颜色令牌 ----------
+$color-bg: #050010;
+$color-bg-card: rgba(255, 255, 255, 0.05);
+$color-bg-tab: #1A0D33;
+$color-bg-elevated: rgba(255, 255, 255, 0.08);
+
+$color-purple: #9333EA;
+$color-purple-light: #CF8BFF;
+$color-purple-dark: #7320BF;
+$color-cyan: #06B6D4;
+$color-green: #22C55E;
+$color-red: #FF4D6D;
+$color-orange: #FFB454;
+
+$color-text-primary: #FFFFFF;
+$color-text-secondary: #A8A8C2;
+$color-text-tertiary: #666680;
+$color-border: rgba(255, 255, 255, 0.1);
+$color-border-light: rgba(255, 255, 255, 0.06);
+
+// ---------- 渐变 ----------
+$gradient-brand: linear-gradient(90deg, #9333EA 0%, #06B6D4 100%);
+$gradient-brand-vertical: linear-gradient(180deg, #9333EA 0%, #7320BF 100%);
+$gradient-banner: linear-gradient(135deg, #330073 0%, #041A59 60%, #050010 100%);
+$gradient-purple-red: linear-gradient(90deg, #9333EA 0%, #FF4D6D 100%);
+$gradient-canvas: linear-gradient(135deg, #1E1040 0%, #0D1A40 100%);
+
+// ---------- 圆角 ----------
+$radius-sm: 12rpx;
+$radius-md: 16rpx;
+$radius-xl: 32rpx;
+$radius-xxl: 40rpx;
+$radius-btn: 36rpx;
+$radius-cta: 48rpx;
+
+// ---------- 阴影（发光效果） ----------
+$shadow-glow-purple: 0 0 16rpx rgba(147, 51, 234, 0.6);
+$shadow-glow-cyan: 0 0 16rpx rgba(6, 182, 212, 0.5);
+$shadow-card-purple: 0 12rpx 32rpx rgba(147, 51, 234, 0.3);
+$shadow-card-cyan: 0 12rpx 32rpx rgba(6, 182, 212, 0.3);
+$shadow-card: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+
+// ---------- 字体 ----------
+$font-title-lg: 52rpx;
+$font-title: 44rpx;
+$font-title-sm: 34rpx;
+$font-subtitle: 30rpx;
+$font-body: 28rpx;
+$font-caption: 24rpx;
+$font-tag: 22rpx;
+$font-mini: 20rpx;
+
+// 兼容旧变量引用
+$uni-primary: $color-purple;
+$uni-success: $color-cyan;
+$uni-bg-primary: $color-bg;
+$uni-bg-card: $color-bg-card;
+$uni-text-primary: $color-text-primary;
+$uni-text-secondary: $color-text-secondary;
+$uni-border: $color-border;
+$uni-radius-xl: $radius-xl;

@@ -1,0 +1,170 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "风格头像助手",
+        "navigationBarBackgroundColor": "#050010",
+        "navigationBarTextStyle": "white",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/editor/index",
+      "style": {
+        "navigationBarTitleText": "照片美化",
+        "navigationBarBackgroundColor": "#050010",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/generate/generate",
+      "style": {
+        "navigationBarTitleText": "制作中",
+        "navigationBarBackgroundColor": "#050010",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/result/result",
+      "style": {
+        "navigationBarTitleText": "制作完成",
+        "navigationBarBackgroundColor": "#050010",
+        "navigationBarTextStyle": "white"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages-meme",
+      "pages": [
+        {
+          "path": "index/index",
+          "style": {
+            "navigationBarTitleText": "表情包工厂",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "edit/edit",
+          "style": {
+            "navigationBarTitleText": "编辑表情",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages-poster",
+      "pages": [
+        {
+          "path": "index/index",
+          "style": {
+            "navigationBarTitleText": "海报生成",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "edit/edit",
+          "style": {
+            "navigationBarTitleText": "编辑海报",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages-status",
+      "pages": [
+        {
+          "path": "index/index",
+          "style": {
+            "navigationBarTitleText": "微信状态图",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "edit/edit",
+          "style": {
+            "navigationBarTitleText": "编辑状态图",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages-ai",
+      "pages": [
+        {
+          "path": "index/index",
+          "style": {
+            "navigationBarTitleText": "AI 风格头像",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "upload/upload",
+          "style": {
+            "navigationBarTitleText": "选择照片",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "generate/generate",
+          "style": {
+            "navigationBarTitleText": "AI 生成中",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "result/result",
+          "style": {
+            "navigationBarTitleText": "生成结果",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "history/history",
+          "style": {
+            "navigationBarTitleText": "历史记录",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "generate-all/generate-all",
+          "style": {
+            "navigationBarTitleText": "随机风格",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": ["pages-ai", "pages-meme", "pages-poster", "pages-status"]
+    }
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "PixelMagic",
+    "navigationBarBackgroundColor": "#050010",
+    "backgroundColor": "#050010",
+    "backgroundColorTop": "#050010",
+    "backgroundColorBottom": "#050010"
+  },
+  "uniIdRouter": {}
+}
