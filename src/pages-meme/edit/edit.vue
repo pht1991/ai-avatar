@@ -991,7 +991,6 @@ function goBack() {
   display: flex;
   justify-content: space-around;
   padding: 16rpx 12rpx;
-  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   background: #050010;
   border-top: 1rpx solid rgba(255, 255, 255, 0.06);
 }

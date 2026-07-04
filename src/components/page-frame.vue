@@ -20,7 +20,10 @@
     <!-- flex 模式 -->
     <template v-else-if="mode === 'flex'">
       <slot />
-      <slot name="footer" />
+      <view class="pf-footer">
+        <slot name="footer" />
+      </view>
+      <view class="pf-safe" />
     </template>
 
     <!-- default 模式 -->
@@ -63,6 +66,11 @@ export default {
   overflow: hidden;
 }
 
+.pf-footer {
+  flex-shrink: 0;
+  width: 100%;
+}
+
 /* ---------- scroll 模式：全高 + scroll-view ---------- */
 .pf--scroll {
   height: 100vh;
@@ -77,6 +85,15 @@ export default {
 }
 
 /* ---------- 底部安全区域 ---------- */
+/* flex 模式：仅占位 safe-area 高度，footer 自带 padding */
+.pf--flex .pf-safe {
+  height: env(safe-area-inset-bottom);
+  background: #050010;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* default / scroll 模式：额外 40rpx 间距 + safe-area */
 .pf-safe {
   height: calc(40rpx + env(safe-area-inset-bottom));
   background: #050010;

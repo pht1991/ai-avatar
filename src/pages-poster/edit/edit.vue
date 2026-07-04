@@ -740,6 +740,9 @@ function doExport(format) {
 .tool-scroll {
   width: 100%;
   white-space: nowrap;
+  background: #050010;
+  padding: 16rpx 0;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.06);
 }
 
 .tool-row {

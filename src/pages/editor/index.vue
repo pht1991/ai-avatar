@@ -947,7 +947,6 @@ function goAI() {
   align-items: center;
   gap: 10rpx;
   padding: 6rpx 8rpx;
-  padding-bottom: calc(6rpx + env(safe-area-inset-bottom));
   background: #050010;
 }
 
