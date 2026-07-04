@@ -185,10 +185,11 @@ const funcList = [
     icon: '📝',
     name: '文字卡片',
     sub: '精美排版文字分享',
-    open: false,
-    bgColor: 'rgba(147, 51, 234, 0.1)',
-    borderColor: 'rgba(147, 51, 234, 0.18)',
-    iconBg: 'rgba(147, 51, 234, 0.18)',
+    open: true,
+    path: '/pages-article/index/index',
+    bgColor: 'rgba(255, 167, 38, 0.12)',
+    borderColor: 'rgba(255, 167, 38, 0.25)',
+    iconBg: 'rgba(255, 167, 38, 0.2)',
   },
 ]
 

@@ -99,6 +99,27 @@
       ]
     },
     {
+      "root": "pages-article",
+      "pages": [
+        {
+          "path": "index/index",
+          "style": {
+            "navigationBarTitleText": "文字卡片",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "edit/edit",
+          "style": {
+            "navigationBarTitleText": "编辑卡片",
+            "navigationBarBackgroundColor": "#050010",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    },
+    {
       "root": "pages-ai",
       "pages": [
         {
@@ -155,7 +176,7 @@
   "preloadRule": {
     "pages/index/index": {
       "network": "all",
-      "packages": ["pages-ai", "pages-meme", "pages-poster", "pages-status"]
+      "packages": ["pages-ai", "pages-meme", "pages-poster", "pages-status", "pages-article"]
     }
   },
   "globalStyle": {

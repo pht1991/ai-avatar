@@ -1,185 +1,186 @@
 <template>
   <PageFrame mode="flex">
-    <!-- ============ 编辑区域 ============ -->
-    <view class="edit-section">
-      <!-- 撤销/重做 -->
-      <view class="history-bar">
-        <view
-          class="history-btn"
-          :class="{ disabled: !canUndo }"
-          @click="undo"
-        >
-          <text class="history-icon">↶</text>
-        </view>
-        <view
-          class="history-btn"
-          :class="{ disabled: !canRedo }"
-          @click="redo"
-        >
-          <text class="history-icon">↷</text>
-        </view>
-      </view>
-
-      <view
-        class="edit-area"
-        id="editArea"
-        @touchstart="onEditTouchStart"
-        @touchmove.stop.prevent="onEditTouchMove"
-        @touchend="onEditTouchEnd"
-        @touchcancel="onEditTouchEnd"
-      >
-        <!-- 照片层 -->
-        <image
-          v-if="photoPath"
-          class="layer-photo"
-          :src="photoPath"
-          mode="aspectFill"
-        />
-        <view v-else class="photo-placeholder" @click="uploadPhoto">
-          <text class="placeholder-icon">📷</text>
-          <text class="placeholder-text">点击上传照片</text>
-        </view>
-
-        <!-- 边框层 -->
-        <image
-          v-if="borderSrc"
-          class="layer-border"
-          :src="borderSrc"
-          mode="scaleToFill"
-        />
-
-        <!-- 装饰层 -->
-        <view
-          v-for="dec in decorations"
-          :key="dec.id"
-          class="decoration"
-          :class="{ selected: dec.id === selectedDecId }"
-          :style="decStyle(dec)"
-        >
-          <image :src="dec.src" mode="aspectFit" class="dec-img" />
-          <!-- 选中边框 -->
-          <view v-if="dec.id === selectedDecId" class="dec-outline" />
-          <!-- 删除按钮 -->
+    <!-- 滚动区域：编辑区 -->
+    <scroll-view class="edit-scroll" scroll-y enhanced :show-scrollbar="false">
+      <!-- ============ 编辑区域 ============ -->
+      <view class="edit-section">
+        <!-- 撤销/重做 -->
+        <view class="history-bar">
           <view
-            v-if="dec.id === selectedDecId"
-            class="dec-delete"
-            :style="{ transform: `rotate(${-dec.rotation}deg) scale(${1 / dec.scale})` }"
-            @touchstart.stop="deleteDec(dec.id)"
+            class="history-btn"
+            :class="{ disabled: !canUndo }"
+            @click="undo"
           >
-            <text class="dec-delete-icon">×</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- ============ 工具栏 ============ -->
-    <view class="toolbar">
-      <view
-        class="tab"
-        :class="{ active: activeTab === 'photo' }"
-        @click="activeTab = 'photo'"
-      >
-        <text class="tab-icon">📷</text>
-        <text class="tab-label">照片</text>
-      </view>
-      <view
-        class="tab"
-        :class="{ active: activeTab === 'border' }"
-        @click="activeTab = 'border'"
-      >
-        <text class="tab-icon">🖼️</text>
-        <text class="tab-label">边框</text>
-      </view>
-      <view
-        class="tab"
-        :class="{ active: activeTab === 'decor' }"
-        @click="activeTab = 'decor'"
-      >
-        <text class="tab-icon">✨</text>
-        <text class="tab-label">装饰</text>
-      </view>
-    </view>
-
-    <!-- ============ 素材面板 ============ -->
-    <view class="material-panel">
-      <!-- 照片面板 -->
-      <view v-if="activeTab === 'photo'" class="panel-photo">
-        <view class="action-btn" @click="uploadPhoto">
-          <text class="action-btn-icon">{{ photoPath ? '🔄' : '📷' }}</text>
-          <text class="action-btn-text">{{ photoPath ? '更换照片' : '上传照片' }}</text>
-        </view>
-        <text class="panel-hint">照片将自动裁剪为正方形</text>
-      </view>
-
-      <!-- 边框面板 -->
-      <scroll-view v-if="activeTab === 'border'" scroll-x class="panel-scroll" :show-scrollbar="false">
-        <view class="scroll-content">
-          <view
-            class="item-card item-none"
-            :class="{ active: !borderSrc }"
-            @click="clearBorder"
-          >
-            <text class="item-none-text">无</text>
+            <text class="history-icon">↶</text>
           </view>
           <view
-            v-for="style in styles"
-            :key="style.id"
-            class="item-card"
-            :class="{ active: borderSrc === borderPath(style.id) }"
-            @click="selectBuiltInBorder(style.id)"
+            class="history-btn"
+            :class="{ disabled: !canRedo }"
+            @click="redo"
           >
-            <image :src="borderPath(style.id)" mode="aspectFill" class="item-img" />
-          </view>
-          <view class="item-card item-upload" @click="uploadBorder">
-            <text class="item-upload-icon">＋</text>
-            <text class="item-upload-text">自定义</text>
+            <text class="history-icon">↷</text>
           </view>
         </view>
-      </scroll-view>
 
-      <!-- 装饰面板 -->
-      <scroll-view v-if="activeTab === 'decor'" scroll-x class="panel-scroll" :show-scrollbar="false">
-        <view class="scroll-content">
-          <view class="item-card item-upload" @click="uploadDecor">
-            <text class="item-upload-icon">＋</text>
-            <text class="item-upload-text">添加</text>
+        <view
+          class="edit-area"
+          id="editArea"
+          @touchstart="onEditTouchStart"
+          @touchmove.stop.prevent="onEditTouchMove"
+          @touchend="onEditTouchEnd"
+          @touchcancel="onEditTouchEnd"
+        >
+          <!-- 照片层 -->
+          <image
+            v-if="photoPath"
+            class="layer-photo"
+            :src="photoPath"
+            mode="aspectFill"
+          />
+          <view v-else class="photo-placeholder" @click="uploadPhoto">
+            <text class="placeholder-icon">📷</text>
+            <text class="placeholder-text">点击上传照片</text>
           </view>
+
+          <!-- 边框层 -->
+          <image
+            v-if="borderSrc"
+            class="layer-border"
+            :src="borderSrc"
+            mode="scaleToFill"
+          />
+
+          <!-- 装饰层 -->
           <view
             v-for="dec in decorations"
             :key="dec.id"
-            class="item-card"
-            :class="{ active: dec.id === selectedDecId }"
-            @click="selectDec(dec.id)"
+            class="decoration"
+            :class="{ selected: dec.id === selectedDecId }"
+            :style="decStyle(dec)"
           >
-            <image :src="dec.src" mode="aspectFit" class="item-img" />
-            <view class="item-del" @click.stop="deleteDec(dec.id)">
-              <text class="item-del-icon">×</text>
+            <image :src="dec.src" mode="aspectFit" class="dec-img" />
+            <!-- 选中边框 -->
+            <view v-if="dec.id === selectedDecId" class="dec-outline" />
+            <!-- 删除按钮 -->
+            <view
+              v-if="dec.id === selectedDecId"
+              class="dec-delete"
+              :style="{ transform: `rotate(${-dec.rotation}deg) scale(${1 / dec.scale})` }"
+              @touchstart.stop="deleteDec(dec.id)"
+            >
+              <text class="dec-delete-icon">×</text>
             </view>
           </view>
-          <view v-if="decorations.length === 0" class="empty-hint">
-            <text class="empty-hint-text">点击「添加」上传装饰素材</text>
-          </view>
         </view>
-      </scroll-view>
+      </view>
+    </scroll-view>
+
+    <!-- ============ 底部控制面板：工具栏 + 素材面板 ============ -->
+    <view class="bottom-panel">
+      <!-- ============ 工具栏 ============ -->
+      <view class="toolbar">
+        <view
+          class="tab"
+          :class="{ active: activeTab === 'photo' }"
+          @click="activeTab = 'photo'"
+        >
+          <text class="tab-icon">📷</text>
+          <text class="tab-label">照片</text>
+        </view>
+        <view
+          class="tab"
+          :class="{ active: activeTab === 'border' }"
+          @click="activeTab = 'border'"
+        >
+          <text class="tab-icon">🖼️</text>
+          <text class="tab-label">边框</text>
+        </view>
+        <view
+          class="tab"
+          :class="{ active: activeTab === 'decor' }"
+          @click="activeTab = 'decor'"
+        >
+          <text class="tab-icon">✨</text>
+          <text class="tab-label">装饰</text>
+        </view>
+      </view>
+
+      <!-- ============ 素材面板 ============ -->
+      <view class="material-panel">
+        <!-- 照片面板 -->
+        <view v-if="activeTab === 'photo'" class="panel-photo">
+          <view class="action-btn" @click="uploadPhoto">
+            <text class="action-btn-icon">{{ photoPath ? '🔄' : '📷' }}</text>
+            <text class="action-btn-text">{{ photoPath ? '更换照片' : '上传照片' }}</text>
+          </view>
+          <text class="panel-hint">照片将自动裁剪为正方形</text>
+        </view>
+
+        <!-- 边框面板 -->
+        <scroll-view v-if="activeTab === 'border'" scroll-x class="panel-scroll" :show-scrollbar="false">
+          <view class="scroll-content">
+            <view
+              class="item-card item-none"
+              :class="{ active: !borderSrc }"
+              @click="clearBorder"
+            >
+              <text class="item-none-text">无</text>
+            </view>
+            <view
+              v-for="style in styles"
+              :key="style.id"
+              class="item-card"
+              :class="{ active: borderSrc === borderPath(style.id) }"
+              @click="selectBuiltInBorder(style.id)"
+            >
+              <image :src="borderPath(style.id)" mode="aspectFill" class="item-img" />
+            </view>
+            <view class="item-card item-upload" @click="uploadBorder">
+              <text class="item-upload-icon">＋</text>
+              <text class="item-upload-text">自定义</text>
+            </view>
+          </view>
+        </scroll-view>
+
+        <!-- 装饰面板 -->
+        <scroll-view v-if="activeTab === 'decor'" scroll-x class="panel-scroll" :show-scrollbar="false">
+          <view class="scroll-content">
+            <view class="item-card item-upload" @click="uploadDecor">
+              <text class="item-upload-icon">＋</text>
+              <text class="item-upload-text">添加</text>
+            </view>
+            <view
+              v-for="dec in decorations"
+              :key="dec.id"
+              class="item-card"
+              :class="{ active: dec.id === selectedDecId }"
+              @click="selectDec(dec.id)"
+            >
+              <image :src="dec.src" mode="aspectFit" class="item-img" />
+              <view class="item-del" @click.stop="deleteDec(dec.id)">
+                <text class="item-del-icon">×</text>
+              </view>
+            </view>
+            <view v-if="decorations.length === 0" class="empty-hint">
+              <text class="empty-hint-text">点击「添加」上传装饰素材</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
     </view>
 
     <!-- ============ 底部操作 ============ -->
     <template #footer>
-    <view class="bottom-bar">
-      <button class="btn-action btn-save" :disabled="saving" @click="saveImage">
-        <text class="btn-icon">💾</text>
-        <text class="btn-label">{{ saving ? '保存中' : '保存' }}</text>
-      </button>
-      <button class="btn-action btn-share" @click="shareImage">
-        <text class="btn-icon">📤</text>
-        <text class="btn-label">分享</text>
-      </button>
-      <!-- AI 生成入口暂时注释
-      <view class="ai-link" @click="goAI">
-        <text class="ai-link-text">🤖 AI 生成</text>
+      <view class="bottom-bar">
+        <button class="btn-action btn-save" :disabled="saving" @click="saveImage">
+          <text class="btn-icon">💾</text>
+          <text class="btn-label">{{ saving ? '保存中' : '保存' }}</text>
+        </button>
+        <button class="btn-action btn-share" @click="shareImage">
+          <text class="btn-icon">📤</text>
+          <text class="btn-label">分享</text>
+        </button>
       </view>
-      -->
-    </view>
     </template>
   </PageFrame>
 </template>
@@ -629,14 +630,20 @@ function goAI() {
 </script>
 
 <style scoped>
+/* ============ 滚动区域 ============ */
+.edit-scroll {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
 /* ============ 编辑区域 ============ */
 .edit-section {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rpx;
-  min-height: 0;
+  padding: 88rpx 4rpx 4rpx;
+  min-height: 620rpx;
   position: relative;
 }
 
@@ -678,10 +685,13 @@ function goAI() {
   position: relative;
   width: 620rpx;
   height: 620rpx;
+  max-width: calc(100vw - 32rpx);
+  max-height: calc(100vh - 320rpx);
   border-radius: 12rpx;
   overflow: hidden;
   background: #0D0A18;
   box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
 }
 
 .layer-photo {
@@ -766,11 +776,20 @@ function goAI() {
   line-height: 1;
 }
 
+/* ============ 底部控制面板：工具栏 + 素材面板 ============ */
+.bottom-panel {
+  width: 100%;
+  box-sizing: border-box;
+  background: #050010;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.06);
+  padding: 16rpx 32rpx 12rpx;
+}
+
 /* ============ 工具栏 ============ */
 .toolbar {
   display: flex;
-  padding: 0 8rpx;
-  gap: 6rpx;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
 }
 
 .tab {
@@ -778,14 +797,16 @@ function goAI() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8rpx 0;
-  border-radius: 12rpx;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 12rpx 0;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.06);
   transition: all 0.2s ease;
 }
 
 .tab.active {
   background: rgba(147, 51, 234, 0.15);
+  border-color: rgba(147, 51, 234, 0.4);
 }
 
 .tab-icon {
@@ -805,7 +826,7 @@ function goAI() {
 
 /* ============ 素材面板 ============ */
 .material-panel {
-  padding: 4rpx 8rpx 2rpx;
+  padding: 0;
   min-height: 108rpx;
 }
 
@@ -945,21 +966,24 @@ function goAI() {
 .bottom-bar {
   display: flex;
   align-items: center;
-  gap: 10rpx;
-  padding: 6rpx 8rpx;
+  gap: 16rpx;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12rpx 32rpx 20rpx;
   background: #050010;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.06);
 }
 
 .btn-action {
   flex: 1;
-  height: 72rpx;
-  border-radius: 36rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
-  font-size: 26rpx;
+  gap: 8rpx;
+  font-size: 28rpx;
   font-weight: 600;
   padding: 0;
   margin: 0;
@@ -986,29 +1010,11 @@ function goAI() {
 }
 
 .btn-icon {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 .btn-label {
-  font-size: 26rpx;
-}
-
-.ai-link {
-  flex-shrink: 0;
-  padding: 0 20rpx;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 36rpx;
-  background: rgba(0, 212, 255, 0.08);
-  border: 2rpx solid rgba(0, 212, 255, 0.15);
-}
-
-.ai-link-text {
-  font-size: 22rpx;
-  color: #00d4ff;
-  white-space: nowrap;
+  font-size: 28rpx;
 }
 
 </style>

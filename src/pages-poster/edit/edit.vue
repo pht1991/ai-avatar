@@ -1,87 +1,92 @@
 <template>
   <PageFrame mode="flex">
-    <!-- 画布区域 -->
-    <view class="canvas-wrap">
-      <canvas
-        type="2d"
-        id="poster-canvas"
-        class="poster-canvas"
-        :style="{ width: canvasW + 'px', height: canvasH + 'px' }"
-        @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
-        @touchend="onTouchEnd"
-      />
-    </view>
-
-    <!-- 文字列表 -->
-    <view class="text-list" v-if="textAreas.length > 0">
-      <view
-        v-for="(item, idx) in textAreas"
-        :key="idx"
-        class="text-item"
-        :class="{ active: activeIdx === idx }"
-        @click="selectText(idx)"
-      >
-        <input
-          v-if="editingIdx === idx"
-          class="ti-input"
-          :value="item.text"
-          @input="e => onEditInput(e, idx)"
-          @blur="onEditBlur(idx)"
-          @confirm="onEditBlur(idx)"
-          :focus="true"
-          :hold-keyboard="true"
+    <!-- 可滚动内容区 -->
+    <scroll-view scroll-y enhanced :show-scrollbar="false" class="edit-scroll">
+      <!-- 画布区域 -->
+      <view class="canvas-wrap">
+        <canvas
+          type="2d"
+          id="poster-canvas"
+          class="poster-canvas"
+          :style="{ width: canvasW + 'px', height: canvasH + 'px' }"
+          @touchstart="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
         />
-        <text v-else class="ti-content">{{ item.text || '文字' }}</text>
-        <view class="ti-info">
-          <view class="ti-color-dot" :style="{ background: item.color }" />
-          <text class="ti-font-label">{{ item.font === 'bold' ? '粗' : '细' }}</text>
-        </view>
-        <view class="ti-actions">
-          <text class="ti-btn" @click.stop="editText(idx)">✎</text>
-          <text class="ti-btn ti-del" @click.stop="removeText(idx)">✕</text>
-        </view>
       </view>
-    </view>
 
-    <!-- 底部工具栏 -->
-    <template #footer>
-    <scroll-view class="tool-scroll" scroll-x enhanced show-scrollbar="false">
-      <view class="tool-row">
-        <view class="tb-item" @click="addText">
-          <text class="tb-icon">T</text>
-          <text class="tb-label">加文字</text>
-        </view>
-        <view class="tb-item" @click="cycleColor">
-          <view class="tb-color" :style="{ background: currentColor }" />
-          <text class="tb-label">颜色</text>
-        </view>
-        <view class="tb-item" @click="cycleFont">
-          <text class="tb-icon">{{ fontIcon }}</text>
-          <text class="tb-label">{{ fontLabel }}</text>
-        </view>
-        <view class="tb-item" @click="changeSize(-2)">
-          <text class="tb-icon">A-</text>
-          <text class="tb-label">缩小</text>
-        </view>
-        <view class="tb-item" @click="changeSize(2)">
-          <text class="tb-icon">A+</text>
-          <text class="tb-label">放大</text>
-        </view>
-        <view class="tb-item" @click="showBgPanel = true">
-          <text class="tb-icon">🎨</text>
-          <text class="tb-label">背景</text>
-        </view>
-        <view class="tb-item" @click="showRatioPanel = true">
-          <text class="tb-icon">📐</text>
-          <text class="tb-label">比例</text>
-        </view>
-        <view class="tb-item tb-export" @click="showExport = true">
-          <text class="tb-icon">↗</text>
-          <text class="tb-label">导出</text>
+      <!-- 文字列表 -->
+      <view class="text-list" v-if="textAreas.length > 0">
+        <view
+          v-for="(item, idx) in textAreas"
+          :key="idx"
+          class="text-item"
+          :class="{ active: activeIdx === idx }"
+          @click="selectText(idx)"
+        >
+          <input
+            v-if="editingIdx === idx"
+            class="ti-input"
+            :value="item.text"
+            @input="e => onEditInput(e, idx)"
+            @blur="onEditBlur(idx)"
+            @confirm="onEditBlur(idx)"
+            :focus="true"
+            :hold-keyboard="true"
+          />
+          <text v-else class="ti-content">{{ item.text || '文字' }}</text>
+          <view class="ti-info">
+            <view class="ti-color-dot" :style="{ background: item.color }" />
+            <text class="ti-font-label">{{ item.font === 'bold' ? '粗' : '细' }}</text>
+          </view>
+          <view class="ti-actions">
+            <text class="ti-btn" @click.stop="editText(idx)">✎</text>
+            <text class="ti-btn ti-del" @click.stop="removeText(idx)">✕</text>
+          </view>
         </view>
       </view>
     </scroll-view>
+
+    <!-- 底部工具栏 -->
+    <template #footer>
+      <view class="tool-box">
+        <view class="tool-row">
+          <view class="tb-item" @click="addText">
+            <text class="tb-icon">T</text>
+            <text class="tb-label">加文字</text>
+          </view>
+          <view class="tb-item" @click="cycleColor">
+            <view class="tb-color" :style="{ background: currentColor }" />
+            <text class="tb-label">颜色</text>
+          </view>
+          <view class="tb-item" @click="cycleFont">
+            <text class="tb-icon">{{ fontIcon }}</text>
+            <text class="tb-label">{{ fontLabel }}</text>
+          </view>
+          <view class="tb-item" @click="changeSize(-2)">
+            <text class="tb-icon">A-</text>
+            <text class="tb-label">缩小</text>
+          </view>
+          <view class="tb-item" @click="changeSize(2)">
+            <text class="tb-icon">A+</text>
+            <text class="tb-label">放大</text>
+          </view>
+        </view>
+        <view class="tool-row">
+          <view class="tb-item" @click="showBgPanel = true">
+            <text class="tb-icon">🎨</text>
+            <text class="tb-label">背景</text>
+          </view>
+          <view class="tb-item" @click="cycleRatio">
+            <text class="tb-icon">📐</text>
+            <text class="tb-label">{{ currentRatio }}</text>
+          </view>
+          <view class="tb-item tb-export" @click="showExport = true">
+            <text class="tb-icon">↗</text>
+            <text class="tb-label">导出</text>
+          </view>
+        </view>
+      </view>
     </template>
   </PageFrame>
 
@@ -120,26 +125,6 @@
       <cover-view class="panel-btn" @click="pickBgImage">从相册选择背景图</cover-view>
 
       <cover-view class="panel-btn cancel" @click="showBgPanel = false">关闭</cover-view>
-    </cover-view>
-  </cover-view>
-
-  <!-- 比例选择面板 -->
-  <cover-view v-if="showRatioPanel" class="panel-overlay" @click.self="showRatioPanel = false">
-    <cover-view class="panel-card">
-      <cover-view class="panel-title">选择比例</cover-view>
-      <cover-view class="ratio-list">
-        <cover-view
-          v-for="r in ratios"
-          :key="r.label"
-          class="ratio-item"
-          :class="{ selected: currentRatio === r.label }"
-          @click="changeRatio(r)"
-        >
-          <cover-view class="ratio-label">{{ r.label }}</cover-view>
-          <cover-view class="ratio-desc">{{ r.desc }}</cover-view>
-        </cover-view>
-      </cover-view>
-      <cover-view class="panel-btn cancel" @click="showRatioPanel = false">关闭</cover-view>
     </cover-view>
   </cover-view>
 
@@ -217,7 +202,6 @@ const currentColor = ref('#FFFFFF')
 const currentFont = ref('bold')
 
 const showBgPanel = ref(false)
-const showRatioPanel = ref(false)
 const showExport = ref(false)
 
 let canvas = null
@@ -315,6 +299,13 @@ function changeRatio(r) {
   nextTick(() => {
     initCanvas()
   })
+}
+
+/* ===================== 比例循环切换 ===================== */
+function cycleRatio() {
+  const idx = ratios.findIndex(r => r.label === currentRatio.value)
+  const next = ratios[(idx + 1) % ratios.length]
+  changeRatio(next)
 }
 
 /* ===================== Canvas ===================== */
@@ -637,15 +628,21 @@ function doExport(format) {
 </script>
 
 <style scoped>
+/* ============ 滚动容器 ============ */
+.edit-scroll {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
 /* ============ 画布 ============ */
 .canvas-wrap {
   padding-top: 20rpx;
   border-radius: 16rpx;
   overflow: hidden;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.5);
-  margin-bottom: 20rpx;
-  flex-shrink: 0;
-  align-self: center;
+  margin: 0 auto 20rpx;
+  width: fit-content;
 }
 
 .poster-canvas {
@@ -657,9 +654,7 @@ function doExport(format) {
   width: 100%;
   max-width: 640rpx;
   padding: 0 24rpx;
-  margin-bottom: 16rpx;
-  flex-shrink: 0;
-  align-self: center;
+  margin: 0 auto 16rpx;
 }
 
 .text-item {
@@ -737,18 +732,22 @@ function doExport(format) {
 }
 
 /* ============ 底部工具栏 ============ */
-.tool-scroll {
+.tool-box {
   width: 100%;
-  white-space: nowrap;
+  box-sizing: border-box;
   background: #050010;
-  padding: 16rpx 0;
+  padding: 16rpx 32rpx;
   border-top: 1rpx solid rgba(255, 255, 255, 0.06);
 }
 
 .tool-row {
-  display: inline-flex;
-  padding: 0 24rpx;
+  display: flex;
+  justify-content: space-between;
   gap: 8rpx;
+}
+
+.tool-row + .tool-row {
+  margin-top: 12rpx;
 }
 
 .tb-item {
@@ -756,11 +755,11 @@ function doExport(format) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 80rpx;
+  width: 0;
+  flex: 1;
   height: 92rpx;
   border-radius: 20rpx;
   background: rgba(255, 255, 255, 0.05);
-  flex-shrink: 0;
 }
 
 .tb-item:active {
@@ -894,42 +893,6 @@ function doExport(format) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255,255,255,0.15);
   color: #A8A8C2;
-}
-
-/* 比例列表 */
-.ratio-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14rpx;
-}
-
-.ratio-item {
-  width: calc((100% - 28rpx) / 3);
-  height: 90rpx;
-  border-radius: 16rpx;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2rpx solid rgba(255,255,255,0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.ratio-item.selected {
-  background: rgba(147, 51, 234, 0.2);
-  border-color: #9333EA;
-}
-
-.ratio-label {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.ratio-desc {
-  font-size: 20rpx;
-  color: #A8A8C2;
-  margin-top: 2rpx;
 }
 
 /* 导出格式 */

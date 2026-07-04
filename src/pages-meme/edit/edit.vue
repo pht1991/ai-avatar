@@ -1,75 +1,105 @@
 <template>
   <PageFrame mode="flex">
-    <!-- 画布区域 -->
-    <view class="canvas-wrap">
-      <canvas
-        type="2d"
-        id="meme-canvas"
-        class="meme-canvas"
-        :style="{ width: canvasW + 'px', height: canvasH + 'px' }"
-        @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
-        @touchend="onTouchEnd"
-      />
-    </view>
-
-    <!-- 文字列表 -->
-    <view class="text-list" v-if="textItems.length > 0">
-      <view
-        v-for="(item, idx) in textItems"
-        :key="idx"
-        class="text-item"
-        :class="{ active: activeIdx === idx }"
-        @click="selectText(idx)"
-      >
-        <!-- 编辑态：input -->
-        <input
-          v-if="editingIdx === idx"
-          class="ti-input"
-          :value="item.text"
-          @input="e => onEditInput(e, idx)"
-          @blur="onEditBlur(idx)"
-          @confirm="onEditBlur(idx)"
-          :focus="true"
-          :hold-keyboard="true"
+    <!-- 滚动区域：画布 + 文字列表 -->
+    <scroll-view class="edit-scroll" scroll-y enhanced :show-scrollbar="false">
+      <!-- 画布区域 -->
+      <view class="canvas-wrap">
+        <canvas
+          type="2d"
+          id="meme-canvas"
+          class="meme-canvas"
+          :style="{ width: canvasW + 'px', height: canvasH + 'px' }"
+          @touchstart="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
         />
-        <!-- 展示态：纯文字 -->
-        <text v-else class="ti-content">{{ item.text || '文字' }}</text>
-        <view class="ti-actions">
-          <text class="ti-btn" @click.stop="editText(idx)">✎</text>
-          <text class="ti-btn ti-del" @click.stop="removeText(idx)">✕</text>
+      </view>
+
+      <!-- 文字列表 -->
+      <view class="text-list" v-if="textItems.length > 0">
+        <view
+          v-for="(item, idx) in textItems"
+          :key="idx"
+          class="text-item"
+          :class="{ active: activeIdx === idx }"
+          @click="selectText(idx)"
+        >
+          <!-- 编辑态：input -->
+          <input
+            v-if="editingIdx === idx"
+            class="ti-input"
+            :value="item.text"
+            @input="e => onEditInput(e, idx)"
+            @blur="onEditBlur(idx)"
+            @confirm="onEditBlur(idx)"
+            :focus="true"
+            :hold-keyboard="true"
+          />
+          <!-- 展示态：纯文字 -->
+          <text v-else class="ti-content">{{ item.text || '文字' }}</text>
+          <view class="ti-actions">
+            <text class="ti-btn" @click.stop="editText(idx)">✎</text>
+            <text class="ti-btn ti-del" @click.stop="removeText(idx)">✕</text>
+          </view>
         </view>
       </view>
-    </view>
+    </scroll-view>
 
     <!-- 底部操作栏 -->
     <template #footer>
-    <view class="bottom-bar">
-      <view class="bb-btn" @click="addText">
-        <text class="bb-icon">T</text>
-        <text class="bb-label">加文字</text>
+      <view class="tool-box">
+        <view class="tool-row">
+          <view class="tb-item" @click="addText">
+            <text class="tb-icon">T</text>
+            <text class="tb-label">加文字</text>
+          </view>
+          <view class="tb-item" @click="changeColor">
+            <view class="tb-color" :style="{ background: currentColor }" />
+            <text class="tb-label">颜色</text>
+          </view>
+          <view class="tb-item" @click="toggleStroke">
+            <text class="tb-icon">{{ hasStroke ? '☑' : '☐' }}</text>
+            <text class="tb-label">描边</text>
+          </view>
+          <view class="tb-item" @click="changeSize(-2)">
+            <text class="tb-icon">A-</text>
+            <text class="tb-label">缩小</text>
+          </view>
+          <view class="tb-item" @click="changeSize(2)">
+            <text class="tb-icon">A+</text>
+            <text class="tb-label">放大</text>
+          </view>
+        </view>
+        <!-- 手绘工具栏 -->
+        <view class="tool-row">
+          <view class="tb-item" :class="{ 'tb-active': drawMode }" @click="toggleDrawMode">
+            <text class="tb-icon">✎</text>
+            <text class="tb-label">{{ drawMode ? '手绘中' : '手绘' }}</text>
+          </view>
+          <view class="tb-item" @click="changeDrawColor">
+            <view class="tb-color" :style="{ background: drawColor }" />
+            <text class="tb-label">画笔色</text>
+          </view>
+          <view class="tb-item" @click="changeDrawSize(-1)">
+            <text class="tb-icon">-</text>
+            <text class="tb-label">笔触</text>
+          </view>
+          <view class="tb-item" @click="changeDrawSize(1)">
+            <text class="tb-icon">+</text>
+            <text class="tb-label">笔触</text>
+          </view>
+          <view class="tb-item" :class="{ 'tb-disabled': drawStrokes.length === 0 }" @click="undoStroke">
+            <text class="tb-icon">↩</text>
+            <text class="tb-label">撤销</text>
+          </view>
+        </view>
+        <view class="tool-row">
+          <view class="tb-item tb-export" @click="exportMeme">
+            <text class="tb-icon">↗</text>
+            <text class="tb-label">导出</text>
+          </view>
+        </view>
       </view>
-      <view class="bb-btn" @click="changeColor">
-        <view class="bb-color" :style="{ background: currentColor }" />
-        <text class="bb-label">颜色</text>
-      </view>
-      <view class="bb-btn" @click="toggleStroke">
-        <text class="bb-icon">{{ hasStroke ? '☑' : '☐' }}</text>
-        <text class="bb-label">描边</text>
-      </view>
-      <view class="bb-btn" @click="changeSize(-2)">
-        <text class="bb-icon">A-</text>
-        <text class="bb-label">缩小</text>
-      </view>
-      <view class="bb-btn" @click="changeSize(2)">
-        <text class="bb-icon">A+</text>
-        <text class="bb-label">放大</text>
-      </view>
-      <view class="bb-btn bb-export" @click="exportMeme">
-        <text class="bb-icon">↗</text>
-        <text class="bb-label">导出</text>
-      </view>
-    </view>
     </template>
 
   </PageFrame>
@@ -241,7 +271,7 @@ const templateDraws = {
       ctx.fillText('?', cx + r * 0.7, cy - r * 0.5)
     },
   },
-  spongebob: {
+  sponge: {
     label: '海绵宝宝', bgColor: '#FFFBE6', faceColor: '#FCD000',
     draw: (ctx, cx, cy, size) => {
       // 海绵宝宝（方形黄脸）
@@ -376,6 +406,15 @@ const templateDraws = {
 // 颜色列表
 const colorList = ['#FFFFFF', '#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FF8800', '#8800FF']
 
+/* ===================== 手绘状态 ===================== */
+const drawMode = ref(false)          // 是否处于手绘模式
+const drawStrokes = ref([])          // [{ points: [{x,y}], color, lineWidth }]
+const drawColor = ref('#FF0000')
+const drawLineWidth = ref(4)
+let currentStrokePoints = []         // 正在绘制中的笔画点
+let isDrawing = false                // 是否正在绘制中
+const drawColorList = ['#FF0000', '#000000', '#FFFFFF', '#FFFF00', '#00FF00', '#0000FF', '#FF8800', '#FF00FF']
+
 /* ===================== 生命周期 ===================== */
 onLoad((query) => {
   pageQuery.value = query || {}
@@ -474,7 +513,7 @@ function render() {
   const query = pageQuery.value
   const bgMap = {
     panda: '#FFF8E1', golden: '#E8F5E9', doge: '#E3F2FD',
-    blur: '#F3E5F5', spongebob: '#FFF9C4', pepe: '#E8F5E9',
+    blur: '#F3E5F5', sponge: '#FFF9C4', pepe: '#E8F5E9',
     distracted: '#FFF3E0', button: '#FCE4EC',
   }
   const tplId = query.tpl
@@ -551,6 +590,9 @@ function render() {
     ctx.fillText(item.text, item.x, item.y)
     ctx.restore()
   })
+
+  // 绘制手绘笔触
+  drawAllStrokes(ctx)
 }
 
 /* ===================== 触摸事件 ===================== */
@@ -564,8 +606,19 @@ function getCanvasRect() {
 }
 
 async function onTouchStart(e) {
-  // 每次触摸前刷新 canvas 位置，防止布局变化后坐标偏移
   await getCanvasRect()
+
+  // 手绘模式：开始绘制笔画
+  if (drawMode.value) {
+    const touch = e.touches[0]
+    const x = touch.clientX - canvasRect.left
+    const y = touch.clientY - canvasRect.top
+    isDrawing = true
+    currentStrokePoints = [{ x, y }]
+    return
+  }
+
+  // 文字模式：检测是否命中文字
   const touch = e.touches[0]
   const x = touch.clientX - canvasRect.left
   const y = touch.clientY - canvasRect.top
@@ -594,6 +647,17 @@ async function onTouchStart(e) {
 }
 
 async function onTouchMove(e) {
+  // 手绘模式：添加笔触点
+  if (drawMode.value && isDrawing) {
+    if (!canvasRect) await getCanvasRect()
+    const touch = e.touches[0]
+    const x = touch.clientX - canvasRect.left
+    const y = touch.clientY - canvasRect.top
+    currentStrokePoints.push({ x, y })
+    drawCurrentStroke()
+    return
+  }
+
   if (touchItemIdx < 0) return
   if (!canvasRect) await getCanvasRect()
   const touch = e.touches[0]
@@ -615,6 +679,21 @@ async function onTouchMove(e) {
 }
 
 function onTouchEnd() {
+  // 手绘模式：完成笔画
+  if (drawMode.value && isDrawing && currentStrokePoints.length > 0) {
+    isDrawing = false
+    drawStrokes.value.push({
+      points: [...currentStrokePoints],
+      color: drawColor.value,
+      lineWidth: drawLineWidth.value,
+    })
+    currentStrokePoints = []
+    render()
+    return
+  }
+
+  isDrawing = false
+  currentStrokePoints = []
   touchItemIdx = -1
   hasMoved = false
 }
@@ -701,6 +780,102 @@ function changeSize(delta) {
   const item = textItems.value[activeIdx.value]
   item.fontSize = Math.max(16, Math.min(80, (item.fontSize || 32) + delta))
   render()
+}
+
+/* ===================== 手绘操作 ===================== */
+function toggleDrawMode() {
+  drawMode.value = !drawMode.value
+  if (!drawMode.value) {
+    // 退出手绘模式，提交未完成的笔画
+    if (isDrawing && currentStrokePoints.length > 0) {
+      drawStrokes.value.push({
+        points: [...currentStrokePoints],
+        color: drawColor.value,
+        lineWidth: drawLineWidth.value,
+      })
+    }
+    isDrawing = false
+    currentStrokePoints = []
+    render()
+  }
+}
+
+function changeDrawColor() {
+  const idx = drawColorList.indexOf(drawColor.value)
+  drawColor.value = drawColorList[(idx + 1) % drawColorList.length]
+}
+
+function changeDrawSize(delta) {
+  drawLineWidth.value = Math.max(1, Math.min(20, drawLineWidth.value + delta))
+}
+
+function undoStroke() {
+  if (drawStrokes.value.length === 0) return
+  drawStrokes.value.pop()
+  render()
+}
+
+/** 在手绘过程中实时绘制当前笔画（不清空整个画布，只增量绘制当前笔画） */
+function drawCurrentStroke() {
+  if (!ctx || currentStrokePoints.length < 2) return
+
+  // 只重绘最新一段（从倒数第二个点到最后一个点）
+  const pts = currentStrokePoints
+  const len = pts.length
+
+  ctx.save()
+  ctx.strokeStyle = drawColor.value
+  ctx.lineWidth = drawLineWidth.value
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+
+  ctx.beginPath()
+  if (len === 2) {
+    ctx.moveTo(pts[0].x, pts[0].y)
+    ctx.lineTo(pts[1].x, pts[1].y)
+  } else {
+    // 二次贝塞尔平滑：从倒数第三个点 → 倒数第二个 → 最后一个
+    const p0 = pts[len - 3]
+    const p1 = pts[len - 2]
+    const p2 = pts[len - 1]
+    const midX = (p1.x + p2.x) / 2
+    const midY = (p1.y + p2.y) / 2
+    ctx.moveTo(p0.x, p0.y)
+    ctx.quadraticCurveTo(p1.x, p1.y, midX, midY)
+  }
+  ctx.stroke()
+  ctx.restore()
+}
+
+/** 完整绘制所有已完成的笔画 */
+function drawAllStrokes(ctx) {
+  const strokes = drawStrokes.value
+  if (strokes.length === 0) return
+
+  ctx.save()
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+
+  for (const stroke of strokes) {
+    const pts = stroke.points
+    if (pts.length < 2) continue
+
+    ctx.strokeStyle = stroke.color
+    ctx.lineWidth = stroke.lineWidth
+    ctx.beginPath()
+    ctx.moveTo(pts[0].x, pts[0].y)
+
+    for (let i = 1; i < pts.length; i++) {
+      const midX = (pts[i - 1].x + pts[i].x) / 2
+      const midY = (pts[i - 1].y + pts[i].y) / 2
+      ctx.quadraticCurveTo(pts[i - 1].x, pts[i - 1].y, midX, midY)
+    }
+    // 最后一段
+    const last = pts[pts.length - 1]
+    ctx.lineTo(last.x, last.y)
+    ctx.stroke()
+  }
+  ctx.restore()
 }
 
 /* ===================== 导出 ===================== */
@@ -814,7 +989,7 @@ function renderSingleFrame(item, frameIdx) {
   // 背景色
   const bgMap = {
     panda: '#FFF8E1', golden: '#E8F5E9', doge: '#E3F2FD',
-    blur: '#F3E5F5', spongebob: '#FFF9C4', pepe: '#E8F5E9',
+    blur: '#F3E5F5', sponge: '#FFF9C4', pepe: '#E8F5E9',
     distracted: '#FFF3E0', button: '#FCE4EC',
   }
   const bgColor = (tplId && bgMap[tplId]) ? bgMap[tplId] : '#F5F5F5'
@@ -872,6 +1047,9 @@ function renderSingleFrame(item, frameIdx) {
   ctx.fillText(item.text, item.x, item.y)
   ctx.restore()
 
+  // 绘制手绘笔触
+  drawAllStrokes(ctx)
+
   // 帧号标记（可选，方便调试）
   // ctx.font = '12px sans-serif'; ctx.fillStyle = 'rgba(0,0,0,0.3)'
   // ctx.fillText(`${frameIdx + 1}/${textItems.value.length}`, w - 30, h - 10)
@@ -908,15 +1086,20 @@ function goBack() {
 </script>
 
 <style scoped>
+/* ============ 滚动区域 ============ */
+.edit-scroll {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
 /* ============ 画布 ============ */
 .canvas-wrap {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24rpx;
   background: #0D0021;
-  min-height: 50vh;
 }
 
 .meme-canvas {
@@ -929,8 +1112,6 @@ function goBack() {
 /* ============ 文字列表 ============ */
 .text-list {
   padding: 16rpx 24rpx;
-  max-height: 200rpx;
-  overflow-y: auto;
 }
 
 .text-item {
@@ -987,53 +1168,71 @@ function goBack() {
 }
 
 /* ============ 底部操作栏 ============ */
-.bottom-bar {
-  display: flex;
-  justify-content: space-around;
-  padding: 16rpx 12rpx;
+.tool-box {
+  width: 100%;
+  box-sizing: border-box;
   background: #050010;
+  padding: 16rpx 32rpx;
   border-top: 1rpx solid rgba(255, 255, 255, 0.06);
 }
 
-.bb-btn {
+.tool-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8rpx;
+}
+
+.tool-row + .tool-row {
+  margin-top: 12rpx;
+}
+
+.tb-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 16rpx;
+  justify-content: center;
+  width: 0;
+  flex: 1;
+  height: 92rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.bb-btn:active {
-  background: rgba(255, 255, 255, 0.08);
+.tb-item:active {
+  opacity: 0.7;
 }
 
-.bb-icon {
-  font-size: 32rpx;
-  color: #CF8BFF;
-  font-weight: 700;
+.tb-export {
+  background: linear-gradient(135deg, rgba(255,167,38,0.3), rgba(255,193,7,0.3));
+  flex: 1;
 }
 
-.bb-label {
-  font-size: 20rpx;
+.tb-active {
+  background: rgba(147, 51, 234, 0.25);
+  border: 1rpx solid rgba(147, 51, 234, 0.5);
+}
+
+.tb-disabled {
+  opacity: 0.3;
+}
+
+.tb-icon {
+  font-size: 28rpx;
+  color: #FFFFFF;
+  margin-bottom: 2rpx;
+}
+
+.tb-label {
+  font-size: 18rpx;
   color: #A8A8C2;
 }
 
-.bb-color {
-  width: 32rpx;
-  height: 32rpx;
+.tb-color {
+  width: 28rpx;
+  height: 28rpx;
   border-radius: 50%;
-  border: 2rpx solid rgba(255, 255, 255, 0.3);
-}
-
-.bb-export {
-  background: rgba(147, 51, 234, 0.15);
-  border-radius: 20rpx;
-  border: 1rpx solid rgba(147, 51, 234, 0.3);
-}
-
-.bb-export .bb-icon {
-  color: #CF8BFF;
+  border: 2rpx solid rgba(255,255,255,0.3);
+  margin-bottom: 2rpx;
 }
 
 /* ============ 格式选择（导出弹窗，仍用 cover-view） ============ */
