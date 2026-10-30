@@ -1,0 +1,40 @@
+src/pages-ai/generate-all/generate-all.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 183
+src/utils/share.js
+  s_fafc85c932783d::t_6d658799d5ed4a 72
+src/utils/image.js
+  s_fafc85c932783d::t_6d658799d5ed4a 313
+src/pages/index/index.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 9,37,121
+src/pages/editor/index.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 265
+src/pages/result/result.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 87,103
+src/pages-ai/index/index.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 11,80,132
+src/pages.json
+  s_fafc85c932783d::t_6d658799d5ed4a 6
+src/pages-ai/result/result.vue
+  s_fafc85c932783d::t_6d658799d5ed4a 193,239
+src/manifest.json
+  s_fafc85c932783d::t_6d658799d5ed4a 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.37",
+  "base_commit_sha": "5c4cae558ae7c46a7c50010ed5056c6585957263",
+  "prompts": {},
+  "sessions": {
+    "s_fafc85c932783d": {
+      "agent_id": {
+        "tool": "workbuddy",
+        "id": "fef2ba17-eae5-47f7-a5a9-06946a0957ae",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "panhaitao-9ap2u <panhaitao@sdpjw.com>",
+      "custom_attributes": {
+        "internal_commit_event_allowlist": "codeup.aliyun.com,codeup-*"
+      }
+    }
+  }
+}
