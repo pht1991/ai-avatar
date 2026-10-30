@@ -84,7 +84,7 @@ if (result) {
 
 // 分享
 onShareAppMessage(() => ({
-  title: `我用「风格头像助手」给照片加上了${currentStyle.value?.name || '精美'}相框！`,
+  title: `我用「图百变」给照片加上了${currentStyle.value?.name || '精美'}相框！`,
   path: `/pages/editor/index?styleId=${store.selectedStyleId}`,
   imageUrl: imageSrc.value,
 }))
@@ -100,7 +100,7 @@ async function saveImage() {
     if (imageSrc.value.startsWith('data:')) {
       const base64 = imageSrc.value.includes(',') ? imageSrc.value.split(',')[1] : imageSrc.value
       const tmpPath = await base64ToTempFile(base64)
-      const watermarked = await addWatermark(tmpPath, '风格头像助手')
+      const watermarked = await addWatermark(tmpPath, '图百变')
       savePath = watermarked || tmpPath
     } else {
       savePath = imageSrc.value

@@ -6,7 +6,7 @@
         <text class="privacy-title">服务协议和隐私政策</text>
         <scroll-view class="privacy-body" scroll-y>
           <text class="privacy-text">
-            欢迎使用 风格头像助手！
+            欢迎使用 图百变！
 
 【信息收集】
 我们提供照片编辑、风格化处理等功能，需要获取您的相册/相机权限以选择照片，不会主动收集您的任何个人信息。
@@ -34,7 +34,7 @@
         <view class="banner-content">
           <view class="banner-left">
             <view class="banner-tag">AI · 本地处理</view>
-            <text class="banner-title">风格头像助手</text>
+            <text class="banner-title">图百变</text>
             <text class="banner-desc">精美边框 · 装饰素材 · 自由编排</text>
             <view class="banner-cta" @click="goEditor">
               <text class="cta-text">立即创作</text>
@@ -118,7 +118,7 @@ function declinePrivacy() {
 
 /* ===================== 分享 ===================== */
 onShareAppMessage(() => ({
-  title: '风格头像助手 — 给照片加上精美相框和装饰',
+  title: '图百变 — 给照片加上精美相框和装饰',
   path: '/pages/index/index',
 }))
 

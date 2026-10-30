@@ -8,7 +8,7 @@
         <view class="circle c2" />
         <view class="circle c3" />
       </view>
-      <text class="hero-title">风格头像助手</text>
+      <text class="hero-title">图百变</text>
       <text class="hero-subtitle">上传一张照片，变身 16 种风格</text>
       <view class="hero-demo">
         <view class="demo-before">
@@ -77,7 +77,7 @@
       <view class="bottom-links">
         <text class="link" @click="goHistory">历史记录</text>
         <text class="link">|</text>
-        <text class="link highlight" @click="goStyleLab">照片风格实验室</text>
+        <text class="link highlight" @click="goStyleLab">风格实验室</text>
         <text class="link">|</text>
         <text class="link" @click="showAbout">关于我们</text>
       </view>
@@ -129,7 +129,7 @@ function goStyleLab() {
 
 function showAbout() {
   uni.showModal({
-    title: '关于 风格头像助手',
+    title: '关于 图百变',
     content: '上传一张正面清晰照片，AI 帮你生成多种风格头像。生成结果仅供娱乐，请勿用于正式场合。',
     showCancel: false,
   })

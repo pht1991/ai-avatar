@@ -310,7 +310,7 @@ export function getImageSize(path) {
  * 给图片添加文字水印（canvas 绘制），返回带水印的临时文件路径
  * 超时 8 秒自动降级返回原图
  */
-export function addWatermark(imagePath, text = '风格头像助手') {
+export function addWatermark(imagePath, text = '图百变') {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
       console.warn('[watermark] 超时，降级返回原图')

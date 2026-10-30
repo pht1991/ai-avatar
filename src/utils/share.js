@@ -69,7 +69,7 @@ export function generateShareCard(imagePath, styleName) {
  */
 export function setupShare(title, imageUrl) {
   return {
-    title: title || '风格头像助手 — 一键生成你的专属头像',
+    title: title || '图百变 — 一键生成你的专属头像',
     path: '/pages/index/index',
     imageUrl: imageUrl || '',
   }

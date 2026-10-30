@@ -3,7 +3,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "风格头像助手",
+        "navigationBarTitleText": "图百变",
         "navigationBarBackgroundColor": "#050010",
         "navigationBarTextStyle": "white",
         "navigationStyle": "custom"

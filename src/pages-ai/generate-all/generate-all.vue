@@ -180,7 +180,7 @@ async function saveResult() {
     let savePath = path
     try {
       savePath = await Promise.race([
-        addWatermark(path, '风格头像助手'),
+        addWatermark(path, '图百变'),
         new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000)),
       ])
     } catch (_) {

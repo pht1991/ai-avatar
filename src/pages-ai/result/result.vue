@@ -190,7 +190,7 @@ async function saveImage() {
   let savePath = tempFilePath.value
   uni.showLoading({ title: '处理中...' })
   try {
-    savePath = await addWatermark(tempFilePath.value, '风格头像助手')
+    savePath = await addWatermark(tempFilePath.value, '图百变')
   } catch (_) {
     // addWatermark 内部已有超时降级，这里作为最后兜底
   }
@@ -236,7 +236,7 @@ onShareAppMessage(() => ({
 
 // 分享到朋友圈
 onShareTimeline(() => ({
-  title: `风格头像助手 · ${currentStyle.value?.name || ''}风格`,
+  title: `图百变 · ${currentStyle.value?.name || ''}风格`,
   query: `styleId=${store.selectedStyleId}`,
   imageUrl: shareCardPath.value || tempFilePath.value,
 }))

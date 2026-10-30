@@ -262,7 +262,7 @@ onMounted(() => {
 })
 
 onShareAppMessage(() => ({
-  title: '照片风格实验室 — 给照片加上精美相框和装饰',
+  title: '图百变 — 给照片加上精美相框和装饰',
   path: '/pages/editor/index',
   imageUrl: lastExportPath.value || '',
 }))
